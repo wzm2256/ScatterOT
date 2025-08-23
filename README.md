@@ -1,6 +1,6 @@
 # Scatter optimal transport
 
-Compute the optimal transport for batched data of different sizes. 
+Compute the optimal transport problem for batched data of different batch sizes. 
 This can be used, for example, for point cloud comparison,
 where the number of points is different for each point cloud.
 

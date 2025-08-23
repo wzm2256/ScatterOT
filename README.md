@@ -7,10 +7,17 @@ where the number of points is different for each point cloud.
 
 <img src="reame_files/scatterOT.png" height="256"/> 
 
-### Envvironment
+### Requirement
 1) Pytorch
 1) [pytorch_scatter](https://github.com/rusty1s/pytorch_scatter)
 
+
+### Installation
+```
+git clone https://github.com/wzm2256/ScatterOT
+cd ScatterOT
+pip install -e .
+```
 
 
 
@@ -26,8 +33,8 @@ python -m ScatterOT.ot
 
 A toy example:
 ```python
-from ScatterOT import sinkhorn_log
-import ScatterOT.utils as utils
+from ScatterOT.ot import sinkhorn_log
+from ScatterOT import utils
 import torch
 
 # source point cloud for 1st and 2nd batch

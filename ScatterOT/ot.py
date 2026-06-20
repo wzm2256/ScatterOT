@@ -60,12 +60,28 @@ def sinkhorn_log(
     torch.Tensor
         Optimal transport matrix
     """
+    device = M.device
+    M_i = M_i.to(device=device)
+    M_j = M_j.to(device=device)
+    if batch_a is not None:
+        batch_a = batch_a.to(device=device)
+    if batch_b is not None:
+        batch_b = batch_b.to(device=device)
+
     if a is None:
-        a = torch.ones((batch_a.shape[0],), dtype=M.dtype)
+        if batch_a is None:
+            raise ValueError("batch_a is required when a is None")
+        a = torch.ones((batch_a.shape[0],), dtype=M.dtype, device=device)
         a = a / utils.scatter_keepsize(a, batch_a, 0, sum=True, keepsize=True)
+    else:
+        a = a.to(device=device)
     if b is None:
-        b = torch.ones((batch_b.shape[0],), dtype=M.dtype)
+        if batch_b is None:
+            raise ValueError("batch_b is required when b is None")
+        b = torch.ones((batch_b.shape[0],), dtype=M.dtype, device=device)
         b = b / utils.scatter_keepsize(b, batch_b, 0, sum=True, keepsize=True)
+    else:
+        b = b.to(device=device)
 
     # init data
     dim_a = len(a)
@@ -75,8 +91,8 @@ def sinkhorn_log(
 
     # we assume that no distances are null except those of the diagonal of
     # distances
-    u = torch.zeros((dim_a, ), dtype=M.dtype)
-    v = torch.zeros((dim_b, ), dtype=M.dtype)
+    u = torch.zeros((dim_a, ), dtype=M.dtype, device=device)
+    v = torch.zeros((dim_b, ), dtype=M.dtype, device=device)
 
 
     def get_logT(u, v):

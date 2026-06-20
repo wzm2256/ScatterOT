@@ -31,12 +31,18 @@ def cdist(a: torch.Tensor, b: torch.Tensor, a_batch: torch.Tensor, b_batch: torc
 	assert a.shape[0] == a_batch.shape[0], "a and a_batch should have the same number of elements"
 	assert b.shape[0] == b_batch.shape[0], "b and b_batch should have the same number of elements"
 	assert a.shape[1] == b.shape[1], "a and b should have the same dimensionality"
+	if a.device != b.device:
+		raise ValueError("a and b should be on the same device")
+
+	device = a.device
+	a_batch = a_batch.to(device=device)
+	b_batch = b_batch.to(device=device)
 
 	a_len = a.shape[0]
 	b_len = b.shape[0]
 
-	All_a_index = torch.arange(a_len, device=a.device)
-	All_b_index = torch.arange(b_len, device=a.device)
+	All_a_index = torch.arange(a_len, device=device)
+	All_b_index = torch.arange(b_len, device=device)
 	All_edges = torch.stack(torch.meshgrid(All_a_index, All_b_index, indexing='xy')).flatten(start_dim=1)
 	Select_index = a_batch[All_edges[0]] == b_batch[All_edges[1]]
 	All_edges = All_edges[:, Select_index]
